@@ -1,8 +1,7 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-
 import 'package:http/http.dart' as http;
+import 'package:weather_icons/weather_icons.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,13 +32,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String countryName="Estonia";
-  String cityName = "Tallinn";
+  String location = "Tallinn, Estonia";
+  String day = "Tuesday";
+  String weatherStatus = "Cloudy";
   String degree = "0";
   String apikey = "8807f7f3df3d41472802ba060f3f7e8f";
 
   showWeather() async{
-    String url = "http://api.openweathermap.org/data/2.5/weather?q=$cityName,$countryName&units=metric&appid="+apikey;
+    String url = "http://api.openweathermap.org/data/2.5/weather?q=$location&units=metric&appid=$apikey";
     final response = await http.get(Uri.parse(url));
 
     if(response.statusCode == 200){
@@ -56,7 +56,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text(widget.title),
+        actions: const [
+          IconButton(onPressed: null,
+              icon: Icon(Icons.settings))
+        ],
       ),
       body: Center(
 
@@ -64,11 +69,30 @@ class _MyHomePageState extends State<MyHomePage> {
 
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+
+
+            Column(
+              children: const [
+                IconButton(onPressed: null,
+
+                    icon: Icon(Icons.cloud,
+                    size: 40)),
+              ],
+            ),
+
+
+            Text(
+              location,
+              style: const TextStyle(
+                fontSize: 30
+              ),
             ),
             Text(
-              'riza',
+              '$day, $weatherStatus',
+              style: Theme.of(context).textTheme.headline4,
+            ),
+            Text(
+              '$degree \u2103',
               style: Theme.of(context).textTheme.headline4,
             ),
           ],
