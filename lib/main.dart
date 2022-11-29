@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(const MyApp());
@@ -29,12 +33,22 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  String countryName="Estonia";
+  String cityName = "Tallinn";
+  String degree = "0";
+  String apikey = "8807f7f3df3d41472802ba060f3f7e8f";
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  showWeather() async{
+    String url = "http://api.openweathermap.org/data/2.5/weather?q=$cityName,$countryName&units=metric&appid="+apikey;
+    final response = await http.get(Uri.parse(url));
+
+    if(response.statusCode == 200){
+      var items = jsonDecode(response.body);
+
+      setState((){
+        degree = (items["main"]["temp"]).round().toString();
+      });
+    }
   }
 
   @override
@@ -54,16 +68,32 @@ class _MyHomePageState extends State<MyHomePage> {
               'You have pushed the button this many times:',
             ),
             Text(
-              '$_counter',
+              'riza',
               style: Theme.of(context).textTheme.headline4,
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+
+      bottomNavigationBar: Material(
+        color: Colors.green,
+        child: InkWell(
+          onTap: () {
+          },
+          child: const SizedBox(
+            height: kToolbarHeight,
+            width: double.infinity,
+            child: Center(
+              child: Text(
+                'Refresh',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 22,
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
